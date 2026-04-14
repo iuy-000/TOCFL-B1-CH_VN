@@ -96,7 +96,8 @@ def index():
 
 @app.route("/teacher/login")
 def teacher_login():
-    return render_template("teacher_login_google.html")
+    redirect_uri = "https://tocfl-b1-ch-vn.onrender.com/teacher/auth/callback"
+    return oauth.google.authorize_redirect(redirect_uri)
 
 @app.route("/teacher/login/google")
 def teacher_login_google():
