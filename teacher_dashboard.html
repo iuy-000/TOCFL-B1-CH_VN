@@ -1,0 +1,39 @@
+{% extends "base.html" %}{% block content %}
+<div class="toolbar"><div>
+  <h1>老師後台<br><span>Trang quản lý giáo viên</span></h1>
+  <p>{{ session.teacher_name }}｜{{ session.teacher_email }}</p>
+</div></div>
+<div class="grid2">
+  <div class="card">
+    <h2>建立班級<br><span>Tạo lớp học</span></h2>
+    <form method="post" action="{{ url_for('create_class') }}" class="form">
+      <label>班級名稱｜Tên lớp<input name="class_name" placeholder="一年甲班 / Lớp 1A"></label>
+      <label>班級密碼｜Mật khẩu lớp<input name="class_password" placeholder="A101"></label>
+      <button class="btn" type="submit">建立班級<br><span>Tạo lớp</span></button>
+    </form>
+  </div>
+  <div class="card">
+    <h2>說明｜Hướng dẫn</h2>
+    <p>老師可以建立班級、更新班級名稱與班級密碼，並查看每位學生的學習狀況。<br>Giáo viên có thể tạo lớp, cập nhật tên lớp và mật khẩu, đồng thời xem tình trạng học tập của từng học viên.</p>
+  </div>
+</div>
+{% for block in class_data %}
+<div class="card">
+  <div class="toolbar">
+    <div><h2>{{ block.class.class_name }}</h2><p class="small">班級密碼：<strong>{{ block.class.class_password }}</strong>｜Mật khẩu lớp</p></div>
+    <a class="btn secondary" href="{{ url_for('export_class_csv', class_id=block.class.id) }}">匯出 CSV<br><span>Xuất CSV</span></a>
+  </div>
+  <form method="post" action="{{ url_for('update_class', class_id=block.class.id) }}" class="form inlineForm">
+    <label>班級名稱｜Tên lớp<input name="class_name" value="{{ block.class.class_name }}"></label>
+    <label>班級密碼｜Mật khẩu lớp<input name="class_password" value="{{ block.class.class_password }}"></label>
+    <button class="btn" type="submit">更新設定<br><span>Cập nhật</span></button>
+  </form>
+  <table class="table"><thead><tr>
+    <th>學號<br><span>Mã số</span></th><th>姓名<br><span>Họ tên</span></th><th>本週積分<br><span>Điểm tuần</span></th><th>總積分<br><span>Tổng điểm</span></th><th>完成練習數<br><span>Số bài hoàn thành</span></th><th>目前連續簽到<br><span>Điểm danh liên tiếp</span></th><th>最佳連續簽到<br><span>Kỷ lục liên tiếp</span></th><th>完成簽到天數<br><span>Số ngày điểm danh</span></th><th>正確率<br><span>Tỷ lệ đúng</span></th>
+  </tr></thead><tbody>
+  {% for s in block.students %}<tr><td>{{ s.student_id }}</td><td>{{ s.student_name }}</td><td>{{ s.weekly_points or 0 }}</td><td>{{ s.total_points or 0 }}</td><td>{{ s.completed_packs or 0 }}</td><td>{{ s.current_streak or 0 }}</td><td>{{ s.best_streak or 0 }}</td><td>{{ s.sign_days or 0 }}</td><td>{{ s.accuracy or 0 }}%</td></tr>{% else %}
+  <tr><td colspan="9" class="small">目前還沒有學生加入這個班級。｜Chưa có học viên nào tham gia lớp này.</td></tr>{% endfor %}
+  </tbody></table>
+</div>
+{% endfor %}
+{% endblock %}

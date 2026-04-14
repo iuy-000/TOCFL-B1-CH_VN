@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block content %}
+<section class="hero">
+  <div class="card heroCard">
+    <h1>班級雲端學習系統<br><span>Hệ thống học tập trên đám mây cho lớp học</span></h1>
+    <p>老師使用 Google 登入，學生使用班級密碼進班。<br>Giáo viên đăng nhập bằng Google, học viên vào lớp bằng mật khẩu lớp.</p>
+    <div class="actions">
+      <a class="btn" href="{{ url_for('teacher_login') }}">老師登入<br><span>Giáo viên đăng nhập</span></a>
+      <a class="btn secondary" href="{{ url_for('student_enter') }}">學生進班<br><span>Học viên vào lớp</span></a>
+    </div>
+  </div>
+</section>
+{% endblock %}

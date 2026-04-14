@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ title or "TOCFL-B1-CH_VN" }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="theme-deep {{ page_mode or 'public' }}">
+  <header class="topbar">
+    <div class="brandWrap">
+      <div class="brandMain">TOCFL-B1-CH_VN</div>
+      <div class="brandSub">華語 B1 × 中文－越南語｜TOCFL B1 × Hoa ngữ – Việt ngữ</div>
+    </div>
+    <nav class="nav">
+      {% if page_mode == 'public' %}
+        <a href="{{ url_for('teacher_login') }}">老師登入<br><span>Giáo viên đăng nhập</span></a>
+        <a href="{{ url_for('student_enter') }}">學生進班<br><span>Học viên vào lớp</span></a>
+      {% else %}
+        <a href="#" id="logoutTrigger">登出<br><span>Đăng xuất</span></a>
+      {% endif %}
+    </nav>
+  </header>
+  <main class="page">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flashWrap">
+          {% for m in messages %}
+            <div class="flash">{{ m }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  {% if page_mode == 'teacher' %}
+  <div class="modalMask" id="logoutModal">
+    <div class="modalCard">
+      <h3>確定要離開嗎？<br><span>Bạn có chắc muốn rời khỏi không?</span></h3>
+      <div class="actions centerActions">
+        <a class="btn danger" href="{{ url_for('teacher_logout') }}">離開<br><span>Rời đi</span></a>
+        <button type="button" class="btn secondary" id="stayLearning">繼續使用<br><span>Tiếp tục</span></button>
+      </div>
+    </div>
+  </div>
+  {% elif page_mode == 'student' %}
+  <div class="modalMask" id="logoutModal">
+    <div class="modalCard">
+      <h3>確定要離開嗎？<br><span>Bạn có chắc muốn rời khỏi không?</span></h3>
+      <div class="actions centerActions">
+        <a class="btn danger" href="{{ url_for('student_logout') }}">離開<br><span>Rời đi</span></a>
+        <button type="button" class="btn secondary" id="stayLearning">繼續學習<br><span>Tiếp tục học</span></button>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  <script>
+    const trigger = document.getElementById('logoutTrigger');
+    const modal = document.getElementById('logoutModal');
+    const stay = document.getElementById('stayLearning');
+    if (trigger && modal) {
+      trigger.addEventListener('click', (e) => { e.preventDefault(); modal.classList.add('show'); });
+      stay && stay.addEventListener('click', () => modal.classList.remove('show'));
+      modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+    }
+  </script>
+</body></html>
