@@ -287,5 +287,9 @@ def student_checkin():
                 (current_streak,best_streak,sign_days,weekly_points,total_points,datetime.utcnow().isoformat(),student_row_id))
     conn.commit(); conn.close(); flash('簽到完成。'); return redirect(url_for('student_dashboard'))
 
-if __name__ == '__main__':
-    init_db(); app.run(debug=True)
+import os
+
+if __name__ == "__main__":
+    init_db()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
