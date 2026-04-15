@@ -1,8 +1,0 @@
-{% extends "base.html" %}{% block content %}
-<div class="single"><div class="card center authCard">
-  <h1>老師登入<br><span>Giáo viên đăng nhập</span></h1>
-  <p>請使用 Google 帳號登入老師端。<br>Vui lòng dùng tài khoản Google để đăng nhập trang giáo viên.</p>
-  <a class="btn googleBtn" href="{{ url_for('teacher_login_google') }}">使用 Google 登入<br><span>Đăng nhập bằng Google</span></a>
-  <p class="small">首次登入會自動建立老師帳號。<br>Tài khoản giáo viên sẽ được tạo tự động trong lần đăng nhập đầu tiên.</p>
-</div></div>
-{% endblock %}
