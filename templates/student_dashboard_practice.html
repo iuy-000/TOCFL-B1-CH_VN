@@ -1,0 +1,56 @@
+{% extends "base.html" %}{% block content %}
+<div class="toolbar compactToolbar"><div>
+  <h1>{{ session.class_name }}</h1>
+  <p>{{ session.student_name }}（{{ session.student_id_text }}）</p>
+</div></div>
+
+<div class="tabs tabs3">
+  <button class="tabBtn active" data-tab="progress">學習進度<br><span>Tiến độ học tập</span></button>
+  <button class="tabBtn" data-tab="review">單字複習<br><span>Ôn từ vựng</span></button>
+  <button class="tabBtn" data-tab="quiz">簽到區<br><span>Khu điểm danh</span></button>
+</div>
+
+<section class="tabPanel active" id="tab-progress">
+  <div class="metricMiniGrid">
+    <div class="miniMetric"><div class="miniLabel">本週積分<br><span>Điểm tuần</span></div><div class="miniValue" id="metricWeekly">{{ me.weekly_points or 0 }}</div></div>
+    <div class="miniMetric"><div class="miniLabel">完成練習數<br><span>Bài đã hoàn thành</span></div><div class="miniValue" id="metricPacks">{{ me.completed_packs or 0 }}</div></div>
+    <div class="miniMetric"><div class="miniLabel">完成簽到數<br><span>Số lần điểm danh</span></div><div class="miniValue" id="metricSignDays">{{ me.sign_days or 0 }}</div></div>
+  </div>
+
+  <div class="card"><h2>班級排行榜<br><span>Bảng xếp hạng lớp</span></h2>
+    <table class="table"><thead><tr><th>排名<br><span>Hạng</span></th><th>學號<br><span>Mã số</span></th><th>姓名<br><span>Họ tên</span></th><th>本週積分<br><span>Điểm tuần</span></th><th>完成練習數<br><span>Bài hoàn thành</span></th><th>最佳連續簽到<br><span>Kỷ lục liên tiếp</span></th><th>正確率<br><span>Tỷ lệ đúng</span></th></tr></thead><tbody>{% for s in leaderboard %}<tr {% if s.student_id == session.student_id_text %}class="me"{% endif %}><td>{{ loop.index }}</td><td>{{ s.student_id }}</td><td>{{ s.student_name }}</td><td>{{ s.weekly_points or 0 }}</td><td>{{ s.completed_packs or 0 }}</td><td>{{ s.best_streak or 0 }}</td><td>{{ s.accuracy or 0 }}%</td></tr>{% endfor %}</tbody></table>
+  </div>
+
+  <div class="card"><h2>每個單元熟悉度<br><span>Mức độ quen thuộc của từng đơn vị</span></h2>
+    <div class="unitList">{% for unit_no, score in unit_familiarity.items() %}<div class="unitRow"><div class="unitHead"><span>單元 {{ unit_no }}｜Bài {{ unit_no }}</span><strong id="score-{{ unit_no }}">{{ score }}%</strong></div><div class="bar"><div class="barFill" id="fill-{{ unit_no }}" style="width: {{ score }}%"></div></div></div>{% endfor %}</div>
+  </div>
+</section>
+
+<section class="tabPanel" id="tab-review">
+  <div class="card"><div class="sectionHead"><h2>單字複習<br><span>Ôn từ vựng</span></h2><div class="selectWrap"><label>選擇單元｜Chọn bài<select id="unitSelect"></select></label></div></div>
+    <div id="wordGrid" class="wordGrid"></div>
+  </div>
+</section>
+
+<section class="tabPanel" id="tab-quiz">
+  <div class="grid2 oneColMobile">
+    <div class="card">
+      <h2>簽到區：四選一小遊戲<br><span>Khu điểm danh: Trò chơi 4 lựa chọn</span></h2>
+      <div class="form formCompact"><label>題目模式｜Chế độ câu hỏi<select id="quizMode"><option value="zh-vi">看漢語選越南文｜Nhìn tiếng Trung chọn tiếng Việt</option><option value="vi-zh">看越南文選漢語｜Nhìn tiếng Việt chọn tiếng Trung</option></select></label></div>
+      <p class="quizHint">完成八十分才能算是完成簽到喔！！<br><span>Phải đạt 80 điểm mới được tính là hoàn thành điểm danh nhé!!</span></p>
+      <div id="quizArea" class="quizArea"><button class="btn" id="startQuiz" type="button">開始小遊戲<br><span>Bắt đầu trò chơi</span></button></div>
+    </div>
+  </div>
+</section>
+
+<div class="mobileTabBar mobileTabBar3">
+  <button class="tabBtn active" data-tab="progress">進度<br><span>Tiến độ</span></button>
+  <button class="tabBtn" data-tab="review">單字<br><span>Từ vựng</span></button>
+  <button class="tabBtn" data-tab="quiz">簽到<br><span>Điểm danh</span></button>
+</div>
+
+<div class="modalMask" id="wordModal"><div class="modalCard vocabCard"><button class="closeBtn" id="wordModalClose" type="button">×</button><div id="wordModalBody"></div></div></div>
+
+<script>const UNITS_COUNT={{ units_count }};</script>
+<script src="{{ url_for('static', filename='practice.js') }}"></script>
+{% endblock %}
